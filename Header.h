@@ -10,9 +10,8 @@ typedef struct Cliente
 {
     char nome[50];
     int codigo;
-    int idade;
     char dataDeNascimento[10];
-    char tipoDeCartao[1];
+    char tipoDeCartao;
     float limiteEmprestimo;
     int quantidadeDeDependentes;
     Dependente *estruturaDependentes;
@@ -20,14 +19,13 @@ typedef struct Cliente
 } Cliente;
 
 void cadastrarNome(char *nome);
-char* cadastrarNascimento();
-char cadastrarTipo();
+char* cadastrarNascimento(char *dataNascStruct, int minIdade);
+void cadastrarTipo();
 void subMenuA();
 void subMenuB();
 void subMenuC();
-void cadastrarLimite(float *limite, int *idade);
-void cadastrarQtdDependente(Cliente *Cliente);
-int compararIdade(int idade);
+void cadastrarLimite(float *limite, int idade);
+void cadastrarQtdDependente(Cliente *cliente);
 int calcularIdade();
 int verificaData(char *data);
 
