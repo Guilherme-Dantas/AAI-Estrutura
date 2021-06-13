@@ -54,10 +54,11 @@ void subMenuA()
     case 1:;
         Cliente *cliente = (Cliente *)malloc(sizeof(Cliente));
         cadastrarNome(cliente->nome);
-        cadastrarNascimento(cliente->dataDeNascimento);
-        calcularIdade(cliente->dataDeNascimento);
+        cadastrarNascimento(cliente->dataDeNascimento, MIN_IDADE_CLIENTE);
         cadastrarLimite(&cliente->limiteEmprestimo, calcularIdade(cliente->dataDeNascimento));
-        //DEVE VERIFICAR QUAL TIPO DE STRUCT ESTÁ CHAMANDO
+        cadastrarTipo(*cliente);
+        cliente->codigo = RAND;
+        
         break;
     case 2:
 
@@ -107,17 +108,17 @@ void cadastrarNome(char *nome)
     } while (nome[0] == '\0');
 }
 
-void cadastrarLimite(float *limite, int *idade)
+void cadastrarLimite(float *limite, int idade)
 {
-    if (*idade <= 40)
+    if (idade <= 40)
     {
         *limite = 10000;
     }
-    else if (*idade <= 60)
+    else if (idade <= 60)
     {
         *limite = 15000;
     }
-    else if (*idade <= 75)
+    else if (idade <= 75)
     {
         *limite = 5000;
     }
@@ -127,7 +128,7 @@ void cadastrarLimite(float *limite, int *idade)
     }
 }
 
-char cadastrarTipo(Cliente cliente)
+void cadastrarTipo(Cliente cliente)
 {
     char tipo = NULL;
     do
@@ -142,14 +143,16 @@ char cadastrarTipo(Cliente cliente)
         }
     } while (tipo != 'U' && tipo != 'N' && tipo != 'I');
 
-    if(tipo == 'N'){
-        cliente.limiteEmprestimo *= 1.05;
-    }else if(tipo == 'I'){
+    if (tipo == 'N')
+    {
+        cliente.limiteEmprestimo *= 1.05;  
+    }
+    else if (tipo == 'I')
+    {
         cliente.limiteEmprestimo *= 1.20;
     }
 
-    return tipo;
-    
+    cliente.tipoDeCartao = tipo;
 }
 
 void cadastrarQtdDependente(Cliente *cliente)
@@ -183,14 +186,13 @@ void cadastrarTipoDependente(char *tipoDependente)
     *tipoDependente = tipo;
 }
 
-
-char *cadastrarNascimento(char *dataNascStruct)
+char *cadastrarNascimento(char *dataNascStruct, int minIdade)
 {
     char dtNas[10];
     int idade = -1;
-    int idadeValida = -1;
     int valida = -1;
-    while (idadeValida != 1)
+
+    do
     {
         do
         {
@@ -200,12 +202,13 @@ char *cadastrarNascimento(char *dataNascStruct)
         } while (valida == 0);
 
         idade = calcularIdade(dtNas);
-        idadeValida = compararIdade(idade);
 
-        if(idadeValida != 1){
-            printf("\nA idade deve ser maior que 18 e menor que 100");
+        if (idade < minIdade || idade > MAX_IDADE)
+        {
+            printf("\nA idade dessa pessoa deve ser maior ou igual a %i e menor que %i.", minIdade, MAX_IDADE);
         }
-    }
+
+    } while (idade < minIdade || idade > MAX_IDADE);
 
     strcpy(dataNascStruct, dtNas);
     return dtNas;
@@ -217,10 +220,11 @@ int calcularIdade(char *dataNascimento)
     int valida = -1;
     //Variáveis do dia atual
     char dtAtual[10], anoAtualC[4], mesAtualC[2], diaAtualC[2];
-    int anoAtual, mesAtual, diaAtual;
-
     char anoNascStr[4], mesNascStr[2], diaNascStr[2];
+
+    int anoAtual, mesAtual, diaAtual;
     int anoNasc, mesNasc, diaNasc;
+
     anoNasc = atoi(strncpy(anoNascStr, dataNascimento + 6, 10));
     mesNasc = atoi(strncpy(mesNascStr, dataNascimento + 3, 6));
     diaNasc = atoi(strncpy(diaNascStr, dataNascimento + 0, 3));
@@ -234,18 +238,20 @@ int calcularIdade(char *dataNascimento)
             valida = verificaData(dtAtual);
         } while (valida == 0);
 
+        //Recortando a data de atual em  mes - dia e passando ano atual para int
+        mesAtual = atoi(strncpy(mesAtualC, dtAtual + 3, 6)); //mes
+        diaAtual = atoi(strncpy(diaAtualC, dtAtual + 0, 3)); //dia
         //Recortando os anos e passando para int
         anoAtual = atoi(strncpy(anoAtualC, dtAtual + 6, 10));
+        
+
 
         if (anoAtual < anoNasc)
         {
             printf("\n>>O ano atual nao pode ser menor que o ano de nascimento");
         }
-    } while (anoAtual < anoNasc);
 
-    //Recortando a data de atual em  mes - dia e passando ano atual para int
-    mesAtual = atoi(strncpy(mesAtualC, dtAtual + 3, 6)); //mes
-    diaAtual = atoi(strncpy(diaAtualC, dtAtual, 2));     //dia
+    } while (anoAtual < anoNasc);
 
     idade = anoAtual - anoNasc;
     //Verificando se a pessoa já fez aniversário ou não
@@ -311,11 +317,6 @@ int verificaData(char *data)
     return 1;
 }
 
-int compararIdade(int idade)
-{
-    if (idade > MAX_IDADE || idade < MIN_IDADE_CLIENTE)
-    {
-        return 0;
-    }
-    return 1;
+void cadastrarQtdDependente(Cliente *cliente){
+    printf("\nDigite a quantidade de dependentes do cliente %s", )
 }
