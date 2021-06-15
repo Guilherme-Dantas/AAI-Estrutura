@@ -1,12 +1,16 @@
-typedef struct Dependente
+typedef struct Dependente dependente;
+struct Dependente
 {
     char nome[50];
     int codigo;
     char dataDeNascimento[10];
-    char tipo[1]
+    char tipo[1];
+    dependente *anterior;
+    dependente *proximo;
 } Dependente;
 
-typedef struct Cliente
+typedef struct Cliente cliente;
+struct Cliente
 {
     char nome[50];
     int codigo;
@@ -14,7 +18,8 @@ typedef struct Cliente
     char tipoDeCartao;
     float limiteEmprestimo;
     int quantidadeDeDependentes;
-    Dependente *estruturaDependentes;
+    cliente *proximo;
+    dependente *listaDependentes;
 
 } Cliente;
 
@@ -25,9 +30,11 @@ void subMenuA();
 void subMenuB();
 void subMenuC();
 void cadastrarLimite(float *limite, int idade);
-void cadastrarQtdDependente(Cliente *cliente);
+void cadastrarQtdDependente(cliente *cliente);
 int calcularIdade();
 int verificaData(char *data);
+void imprimirLista(cliente *lista);
+cliente* cadastrarCliente(cliente *listaCliente);
 
 
 #define RAND rand() % 1000
