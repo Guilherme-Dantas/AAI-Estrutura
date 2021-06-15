@@ -6,6 +6,8 @@
 
 void menu()
 {
+    cliente *listacliente = NULL;
+    
     char opcao;
     do
     {
@@ -23,20 +25,20 @@ void menu()
         switch (opcao)
         {
         case 'A':
-            subMenuA();
+            subMenuA(listacliente);
             break;
         case 'B':
             subMenuB();
             break;
         case 'C':
-            subMenuC();
+            subMenuC(listacliente);
             break;
         }
 
     } while (opcao != 'D');
 }
 
-void subMenuA()
+void subMenuA(cliente *listacliente)
 {
     int opcaoNum = 0;
     do
@@ -52,13 +54,7 @@ void subMenuA()
     switch (opcaoNum)
     {
     case 1:;
-        Cliente *cliente = (Cliente *)malloc(sizeof(Cliente));
-        cadastrarNome(cliente->nome);
-        cadastrarNascimento(cliente->dataDeNascimento, MIN_IDADE_CLIENTE);
-        cadastrarLimite(&cliente->limiteEmprestimo, calcularIdade(cliente->dataDeNascimento));
-        cadastrarTipo(*cliente);
-        cliente->codigo = RAND;
-        
+        listacliente = cadastrarCliente(listacliente);
         break;
     case 2:
 
@@ -81,7 +77,7 @@ void subMenuB()
     } while (opcaoNum < 1 || opcaoNum > 2);
 }
 
-void subMenuC()
+void subMenuC(cliente *lista)
 {
     int opcaoNum = 0;
     do
@@ -95,6 +91,10 @@ void subMenuC()
             printf(">>As opcoes tem que ser 1, 2 ou 3\n");
         }
     } while (opcaoNum < 1 || opcaoNum > 3);
+
+    if(opcaoNum == 1){
+        void imprimirLista();
+    }
 }
 
 void cadastrarNome(char *nome)
@@ -128,7 +128,7 @@ void cadastrarLimite(float *limite, int idade)
     }
 }
 
-void cadastrarTipo(Cliente cliente)
+void cadastrarTipo(cliente cliente)
 {
     char tipo = NULL;
     do
@@ -155,7 +155,7 @@ void cadastrarTipo(Cliente cliente)
     cliente.tipoDeCartao = tipo;
 }
 
-void cadastrarQtdDependente(Cliente *cliente)
+void cadastrarQtdDependente(cliente *cliente)
 {
     int quantidade = 0;
     do
@@ -244,8 +244,6 @@ int calcularIdade(char *dataNascimento)
         //Recortando os anos e passando para int
         anoAtual = atoi(strncpy(anoAtualC, dtAtual + 6, 10));
         
-
-
         if (anoAtual < anoNasc)
         {
             printf("\n>>O ano atual nao pode ser menor que o ano de nascimento");
@@ -317,6 +315,25 @@ int verificaData(char *data)
     return 1;
 }
 
-void cadastrarQtdDependente(Cliente *cliente){
-    printf("\nDigite a quantidade de dependentes do cliente %s", )
+/*void cadastrarQtdDependente(Cliente *cliente){
+    printf("\nDigite a quantidade de dependentes do cliente %s", cliente->nome);
+}*/
+
+cliente* cadastrarCliente(cliente *inicioLista){
+        cliente *clienteNovo = (cliente *)malloc(sizeof(cliente));
+        cadastrarNome(clienteNovo->nome);
+        cadastrarNascimento(clienteNovo->dataDeNascimento, MIN_IDADE_CLIENTE);
+        cadastrarLimite(&clienteNovo->limiteEmprestimo, calcularIdade(clienteNovo->dataDeNascimento));
+        cadastrarTipo(*clienteNovo);
+        clienteNovo->codigo = RAND;
+        clienteNovo->proximo = inicioLista;
+
+        return clienteNovo;
 }
+
+/*void imprimirLista(Cliente *lista) {
+    if (lista != NULL) { //Caso recursivo. 
+        printf("\n%p - %i - %p", lista, lista->codigo, lista->proximo);
+        imprimirLista(lista->proximo);
+    }
+}*/
