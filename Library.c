@@ -25,7 +25,7 @@ void menu()
         switch (opcao)
         {
         case 'A':
-            subMenuA(listacliente);
+            listacliente = subMenuA(listacliente);
             break;
         case 'B':
             subMenuB();
@@ -38,7 +38,8 @@ void menu()
     } while (opcao != 'D');
 }
 
-void subMenuA(cliente *listacliente)
+cliente* subMenuA(cliente *listacliente)
+
 {
     int opcaoNum = 0;
     do
@@ -55,14 +56,39 @@ void subMenuA(cliente *listacliente)
     {
     case 1:;
         listacliente = cadastrarCliente(listacliente);
+        imprimirLista(listacliente);
         break;
-    case 2:
+    case 2:;
+        int codigo = 0;
+        cliente *clienteEncontrado;
+        //dependente *listaDependentes = NULL;
+        dependente *ultimoListaDependentes = NULL;
+
+        do{
+            codigo = procurarCodigo();
+            clienteEncontrado = buscarRegistro(listacliente, codigo);
+
+            if(clienteEncontrado == NULL){
+                printf("\nCliente com o codigo %i nao foi encontrado. Insira novamente!", codigo);
+            }
+        }while(clienteEncontrado == NULL);
+        cadastrarQtdDependente(clienteEncontrado);
+        
+        int i;
+        for(i = 0; i < clienteEncontrado->quantidadeDeDependentes; i++){
+            ultimoListaDependentes = cadastrarDependentes(ultimoListaDependentes, clienteEncontrado);
+            clienteEncontrado->listaDependentes = ultimoListaDependentes;
+        }
+
 
         break;
     default:
         break;
     }
+
+    return listacliente;
 }
+
 void subMenuB()
 {
     int opcaoNum = 0;
@@ -163,6 +189,10 @@ void cadastrarQtdDependente(cliente *cliente)
         fflush(stdin);
         printf("\nDigite a quantidade de dependetes do cliente %s:", cliente->nome);
         scanf("%i", &quantidade);
+
+        if(quantidade < 0 || quantidade > MAX_DEPENDETES){
+            printf("\nA quantidade de dependentes deve ser entre 0 e 2");
+        }
     } while (quantidade < 0 || quantidade > MAX_DEPENDETES);
 
     cliente->quantidadeDeDependentes = quantidade;
@@ -179,7 +209,7 @@ void cadastrarTipoDependente(char *tipoDependente)
         tipo = toupper(tipo);
         if (tipo != 'C' && tipo != 'F' && tipo != 'E')
         {
-            printf("\nInsira um valor dentre os possiveis: E, F ou E");
+            printf("\nInsira um valor dentre os possiveis: C, E ou F");
         }
     } while (tipo != 'C' && tipo != 'F' && tipo != 'E');
 
@@ -315,9 +345,27 @@ int verificaData(char *data)
     return 1;
 }
 
-/*void cadastrarQtdDependente(Cliente *cliente){
-    printf("\nDigite a quantidade de dependentes do cliente %s", cliente->nome);
-}*/
+dependente* cadastrarDependentes(dependente *fimLista, cliente *cliente){
+      
+    dependente *novoDependente = (dependente *)malloc(sizeof(dependente));
+    cadastrarNome(novoDependente->nome);
+    cadastrarNascimento(novoDependente->dataDeNascimento, MIN_IDADE_DEPENDENTE);
+    cadastrarTipoDependente(novoDependente->tipo);
+    if(fimLista == NULL){
+        novoDependente->codigo = RAND_INCREMENTAL(cliente->codigo);
+    }else{
+        novoDependente->codigo = RAND_INCREMENTAL(fimLista->codigo);
+    }
+
+    novoDependente->proximo = NULL;
+    novoDependente->anterior = fimLista;
+
+    if(fimLista != NULL){
+        fimLista->proximo = novoDependente;
+    }
+
+    return novoDependente;
+}
 
 cliente* cadastrarCliente(cliente *inicioLista){
         cliente *clienteNovo = (cliente *)malloc(sizeof(cliente));
@@ -331,9 +379,34 @@ cliente* cadastrarCliente(cliente *inicioLista){
         return clienteNovo;
 }
 
-/*void imprimirLista(Cliente *lista) {
+void imprimirLista(cliente *lista) {
     if (lista != NULL) { //Caso recursivo. 
         printf("\n%p - %i - %p", lista, lista->codigo, lista->proximo);
         imprimirLista(lista->proximo);
     }
-}*/
+}
+
+cliente* buscarRegistro(cliente *atual, int cod){
+    cliente *anterior = NULL;
+    while (atual != NULL) {//Enquanto este ponteiro apontar para algum registro continua. 
+        if (atual->codigo == cod) { //Encontrei o registro. 
+            return atual;    
+        } else { //Não encontrei o registro. 
+            (anterior) = atual; //Guarda o registro atual como anterior. 
+            atual = atual->proximo; //O atual aponta para o próximo, ainda na busca do registro. 
+        }
+    }   
+    return NULL; //Se chegar aqui é porque o registro não existe na lista. 
+}
+
+int procurarCodigo(){
+    int valor;
+    do{
+        printf("\nDigite o código a ser procurado: ");
+        scanf("%i", &valor);
+        if (valor < 0){
+            printf("\nInválido.");
+        }
+    } while (valor < 0);
+    return valor;
+}
