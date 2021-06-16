@@ -26,7 +26,7 @@ struct Cliente
 void cadastrarNome(char *nome);
 char* cadastrarNascimento(char *dataNascStruct, int minIdade);
 void cadastrarTipo();
-void subMenuA();
+cliente* subMenuA(cliente *listacliente);
 void subMenuB();
 void subMenuC();
 void cadastrarLimite(float *limite, int idade);
@@ -35,6 +35,11 @@ int calcularIdade();
 int verificaData(char *data);
 void imprimirLista(cliente *lista);
 cliente* cadastrarCliente(cliente *listaCliente);
+dependente* cadastrarDependentes(dependente *fimLista, cliente *cliente);
+cliente* buscarRegistro(cliente *atual, int cod);
+int procurarCodigo();
+
+
 
 
 #define RAND rand() % 1000
