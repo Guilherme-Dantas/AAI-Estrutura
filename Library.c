@@ -6,8 +6,16 @@
 
 void menu()
 {
-    cliente *listacliente = NULL;
-    
+
+    /*
+        VERIFICAÇÕES A FAZER
+            1- REFATORAR DATA
+            2- VERIFICAR SE A DATA ESTÁ COMPORTANDO CORRETAMENTE O TAMANHO INSERIDO
+            3- VALIDAÇÕES NO INSERT DA DATA PARA IMPEDIR NASCIMENTOS NO FUTURO
+            4- CALCULAR MEDIA DE LIMITE NA LISTA
+    */
+    cliente *listaCliente = NULL;
+
     char opcao;
     do
     {
@@ -25,20 +33,20 @@ void menu()
         switch (opcao)
         {
         case 'A':
-            listacliente = subMenuA(listacliente);
+            listaCliente = subMenuA(listaCliente);
             break;
         case 'B':
             subMenuB();
             break;
         case 'C':
-            subMenuC(listacliente);
+            subMenuC(listaCliente);
             break;
         }
 
     } while (opcao != 'D');
 }
 
-cliente* subMenuA(cliente *listacliente)
+cliente *subMenuA(cliente *listaCliente)
 
 {
     int opcaoNum = 0;
@@ -55,8 +63,8 @@ cliente* subMenuA(cliente *listacliente)
     switch (opcaoNum)
     {
     case 1:;
-        listacliente = cadastrarCliente(listacliente);
-        imprimirLista(listacliente);
+        listaCliente = cadastrarCliente(listaCliente);
+        imprimirLista(listaCliente);
         break;
     case 2:;
         int codigo = 0;
@@ -64,29 +72,31 @@ cliente* subMenuA(cliente *listacliente)
         //dependente *listaDependentes = NULL;
         dependente *ultimoListaDependentes = NULL;
 
-        do{
+        do
+        {
             codigo = procurarCodigo();
-            clienteEncontrado = buscarRegistro(listacliente, codigo);
+            clienteEncontrado = buscarRegistro(listaCliente, codigo);
 
-            if(clienteEncontrado == NULL){
+            if (clienteEncontrado == NULL)
+            {
                 printf("\nCliente com o codigo %i nao foi encontrado. Insira novamente!", codigo);
             }
-        }while(clienteEncontrado == NULL);
+        } while (clienteEncontrado == NULL);
         cadastrarQtdDependente(clienteEncontrado);
-        
+
         int i;
-        for(i = 0; i < clienteEncontrado->quantidadeDeDependentes; i++){
+        for (i = 0; i < clienteEncontrado->quantidadeDeDependentes; i++)
+        {
             ultimoListaDependentes = cadastrarDependentes(ultimoListaDependentes, clienteEncontrado);
             clienteEncontrado->listaDependentes = ultimoListaDependentes;
         }
-
 
         break;
     default:
         break;
     }
 
-    return listacliente;
+    return listaCliente;
 }
 
 void subMenuB()
@@ -103,7 +113,7 @@ void subMenuB()
     } while (opcaoNum < 1 || opcaoNum > 2);
 }
 
-void subMenuC(cliente *lista)
+void subMenuC(cliente *listaCliente)
 {
     int opcaoNum = 0;
     do
@@ -118,8 +128,14 @@ void subMenuC(cliente *lista)
         }
     } while (opcaoNum < 1 || opcaoNum > 3);
 
-    if(opcaoNum == 1){
-        void imprimirLista();
+    switch (opcaoNum)
+    {
+    case 1:;
+        exibirTodosClientes(listaCliente, 0);
+        break;
+
+    default:
+        break;
     }
 }
 
@@ -130,7 +146,7 @@ void cadastrarNome(char *nome)
     {
         fflush(stdin);
         printf("\n\nDigite o seu nome: ");
-        scanf("%s", nome);
+        scanf(" %[^\n]", nome);
     } while (nome[0] == '\0');
 }
 
@@ -154,7 +170,7 @@ void cadastrarLimite(float *limite, int idade)
     }
 }
 
-void cadastrarTipo(cliente cliente)
+void cadastrarTipoCartao(cliente *cliente)
 {
     char tipo = NULL;
     do
@@ -171,14 +187,14 @@ void cadastrarTipo(cliente cliente)
 
     if (tipo == 'N')
     {
-        cliente.limiteEmprestimo *= 1.05;  
+        cliente->limiteEmprestimo *= 1.05;
     }
     else if (tipo == 'I')
     {
-        cliente.limiteEmprestimo *= 1.20;
+        cliente->limiteEmprestimo *= 1.20;
     }
 
-    cliente.tipoDeCartao = tipo;
+    cliente->tipoDeCartao = tipo;
 }
 
 void cadastrarQtdDependente(cliente *cliente)
@@ -190,7 +206,8 @@ void cadastrarQtdDependente(cliente *cliente)
         printf("\nDigite a quantidade de dependetes do cliente %s:", cliente->nome);
         scanf("%i", &quantidade);
 
-        if(quantidade < 0 || quantidade > MAX_DEPENDETES){
+        if (quantidade < 0 || quantidade > MAX_DEPENDETES)
+        {
             printf("\nA quantidade de dependentes deve ser entre 0 e 2");
         }
     } while (quantidade < 0 || quantidade > MAX_DEPENDETES);
@@ -198,27 +215,27 @@ void cadastrarQtdDependente(cliente *cliente)
     cliente->quantidadeDeDependentes = quantidade;
 }
 
-void cadastrarTipoDependente(char *tipoDependente)
+void cadastrarTipoDependente(dependente *dependente)
 {
-    char tipo = NULL;
+    char tipoDependente = NULL;
     do
     {
         fflush(stdin);
         printf("\nInsira o tipo de dependente: ");
-        scanf("%c", &tipo);
-        tipo = toupper(tipo);
-        if (tipo != 'C' && tipo != 'F' && tipo != 'E')
+        scanf("%c", &tipoDependente);
+        tipoDependente = toupper(tipoDependente);
+        if (tipoDependente != 'C' && tipoDependente != 'F' && tipoDependente != 'E')
         {
             printf("\nInsira um valor dentre os possiveis: C, E ou F");
         }
-    } while (tipo != 'C' && tipo != 'F' && tipo != 'E');
+    } while (tipoDependente != 'C' && tipoDependente != 'F' && tipoDependente != 'E');
 
-    *tipoDependente = tipo;
+    dependente->tipo = tipoDependente;
 }
 
 char *cadastrarNascimento(char *dataNascStruct, int minIdade)
 {
-    char dtNas[10];
+    char dtNas[11];
     int idade = -1;
     int valida = -1;
 
@@ -249,7 +266,7 @@ int calcularIdade(char *dataNascimento)
     int idade = 0;
     int valida = -1;
     //Variáveis do dia atual
-    char dtAtual[10], anoAtualC[4], mesAtualC[2], diaAtualC[2];
+    char dtAtual[11], anoAtualC[4], mesAtualC[2], diaAtualC[2];
     char anoNascStr[4], mesNascStr[2], diaNascStr[2];
 
     int anoAtual, mesAtual, diaAtual;
@@ -273,7 +290,7 @@ int calcularIdade(char *dataNascimento)
         diaAtual = atoi(strncpy(diaAtualC, dtAtual + 0, 3)); //dia
         //Recortando os anos e passando para int
         anoAtual = atoi(strncpy(anoAtualC, dtAtual + 6, 10));
-        
+
         if (anoAtual < anoNasc)
         {
             printf("\n>>O ano atual nao pode ser menor que o ano de nascimento");
@@ -345,68 +362,133 @@ int verificaData(char *data)
     return 1;
 }
 
-dependente* cadastrarDependentes(dependente *fimLista, cliente *cliente){
-      
+dependente *cadastrarDependentes(dependente *fimLista, cliente *cliente)
+{
+
     dependente *novoDependente = (dependente *)malloc(sizeof(dependente));
     cadastrarNome(novoDependente->nome);
     cadastrarNascimento(novoDependente->dataDeNascimento, MIN_IDADE_DEPENDENTE);
-    cadastrarTipoDependente(novoDependente->tipo);
-    if(fimLista == NULL){
+    cadastrarTipoDependente(novoDependente);
+    if (fimLista == NULL)
+    {
         novoDependente->codigo = RAND_INCREMENTAL(cliente->codigo);
-    }else{
+    }
+    else
+    {
         novoDependente->codigo = RAND_INCREMENTAL(fimLista->codigo);
     }
 
     novoDependente->proximo = NULL;
     novoDependente->anterior = fimLista;
 
-    if(fimLista != NULL){
+    if (fimLista != NULL)
+    {
         fimLista->proximo = novoDependente;
     }
 
     return novoDependente;
 }
 
-cliente* cadastrarCliente(cliente *inicioLista){
-        cliente *clienteNovo = (cliente *)malloc(sizeof(cliente));
-        cadastrarNome(clienteNovo->nome);
-        cadastrarNascimento(clienteNovo->dataDeNascimento, MIN_IDADE_CLIENTE);
-        cadastrarLimite(&clienteNovo->limiteEmprestimo, calcularIdade(clienteNovo->dataDeNascimento));
-        cadastrarTipo(*clienteNovo);
-        clienteNovo->codigo = RAND;
-        clienteNovo->proximo = inicioLista;
+cliente *cadastrarCliente(cliente *inicioLista)
+{
+    cliente *clienteNovo = (cliente *)malloc(sizeof(cliente));
+    cadastrarNome(clienteNovo->nome);
+    cadastrarNascimento(clienteNovo->dataDeNascimento, MIN_IDADE_CLIENTE);
+    cadastrarLimite(&clienteNovo->limiteEmprestimo, calcularIdade(clienteNovo->dataDeNascimento));
+    cadastrarTipoCartao(clienteNovo);
+    clienteNovo->codigo = RAND;
+    clienteNovo->proximo = inicioLista;
+    clienteNovo->quantidadeDeDependentes = 0;
 
-        return clienteNovo;
+    return clienteNovo;
 }
 
-void imprimirLista(cliente *lista) {
-    if (lista != NULL) { //Caso recursivo. 
-        printf("\n%p - %i - %p", lista, lista->codigo, lista->proximo);
-        imprimirLista(lista->proximo);
-    }
-}
-
-cliente* buscarRegistro(cliente *atual, int cod){
+//REFATORAR FUNÇÃO - PRIORIDADE
+cliente *buscarRegistro(cliente *atual, int cod)
+{
     cliente *anterior = NULL;
-    while (atual != NULL) {//Enquanto este ponteiro apontar para algum registro continua. 
-        if (atual->codigo == cod) { //Encontrei o registro. 
-            return atual;    
-        } else { //Não encontrei o registro. 
-            (anterior) = atual; //Guarda o registro atual como anterior. 
-            atual = atual->proximo; //O atual aponta para o próximo, ainda na busca do registro. 
+    while (atual != NULL)
+    { //Enquanto este ponteiro apontar para algum registro continua.
+        if (atual->codigo == cod)
+        { //Encontrei o registro.
+            return atual;
         }
-    }   
-    return NULL; //Se chegar aqui é porque o registro não existe na lista. 
+        else
+        {                           //Não encontrei o registro.
+            (anterior) = atual;     //Guarda o registro atual como anterior.
+            atual = atual->proximo; //O atual aponta para o próximo, ainda na busca do registro.
+        }
+    }
+    return NULL; //Se chegar aqui é porque o registro não existe na lista.
 }
 
-int procurarCodigo(){
+// TROCAR NOME DA FUNÇÃO
+int procurarCodigo()
+{
     int valor;
-    do{
+    do
+    {
         printf("\nDigite o código a ser procurado: ");
         scanf("%i", &valor);
-        if (valor < 0){
+        if (valor < 0)
+        {
             printf("\nInválido.");
         }
     } while (valor < 0);
     return valor;
+}
+
+void exibirTodosClientes(cliente *listaCliente, int count)
+{
+    if (listaCliente != NULL)
+    {
+        printarValoresCliente(listaCliente);
+        exibirTodosClientes(listaCliente->proximo, ++count);
+    }
+    else
+    {
+        printf("\nLista vazia, não há nada para exibir!\n");
+    }
+
+}
+
+void exibirClienteEspecifico(cliente *listaCliente, int codigo)
+{
+    cliente *clienteEncontrado = buscarRegistro(listaCliente, codigo);
+    if (clienteEncontrado != NULL)
+    {
+        printarValoresCliente(clienteEncontrado);
+    }
+    else
+    {
+        printf("\nNenhum cliente com esse codigo foi encontrado!\n");
+    }
+}
+
+void exibirDependentes(dependente *listaDependente)
+{
+    if (listaDependente != NULL)
+    {
+        printf("\nDados do Dependente: %s", listaDependente->nome);
+        printf("\nCodigo: %i", listaDependente->codigo);
+        printf("\nData de Nascimento: %s", listaDependente->dataDeNascimento);
+        printf("\nTipo de Dependente: %c", listaDependente->tipo);
+
+        exibirDependentes(listaDependente->anterior);
+    }
+}
+
+void printarValoresCliente(cliente *cliente)
+{
+    printf("\n================================================================");
+    printf("\nDados do cliente %s", cliente->nome);
+    printf("\nCodigo: %i", cliente->codigo);
+    printf("\nData de Nascimento: %s", cliente->dataDeNascimento);
+    printf("\nTipo de Cartao: %c", cliente->tipoDeCartao);
+    printf("\nLimite de Emprestimo: %f", cliente->limiteEmprestimo);
+    printf("\nQuantidade de Dependentes: %i", cliente->quantidadeDeDependentes);
+    if (cliente->quantidadeDeDependentes > 0)
+    {
+        exibirDependentes(cliente->listaDependentes);
+    }
 }
