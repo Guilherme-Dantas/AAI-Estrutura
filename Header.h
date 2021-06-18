@@ -1,4 +1,3 @@
-/////////////////////////////////////////
 typedef struct Dependente dependente;
 struct Dependente
 {
@@ -35,15 +34,16 @@ void cadastrarLimite(float *limite, int idade);
 void cadastrarQtdDependente(cliente *cliente);
 int calcularIdade();
 int verificaData(char *data);
-void imprimirLista(cliente *lista);
 cliente *cadastrarCliente(cliente *listaCliente);
 dependente *cadastrarDependentes(dependente *fimLista, cliente *cliente);
 cliente *buscarRegistro(cliente *atual, int cod);
 int procurarCodigo();
-void exibirTodosClientes(cliente *listaCliente, int count);
+void exibirTodosClientes(cliente *listaCliente, int count, float limiteTotal);
 void exibirClienteEspecifico(cliente *listaCliente, int codigo);
 void exibirDependentes(dependente *listaDependente);
 void printarValoresCliente(cliente *cliente);
+void printarClientePorCartao(cliente *listaCliente, char tipo);
+char recebeTipoCartao();
 
 #define RAND rand() % 1000
 #define RAND_INCREMENTAL(a) (a + 1)

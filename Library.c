@@ -3,7 +3,7 @@
 #include <ctype.h>
 #include <string.h>
 #include "Header.h"
-///aaaaaaaaaaaaaaaa
+
 void menu()
 {
 
@@ -19,7 +19,7 @@ void menu()
     char opcao;
     do
     {
-        printf("========================= Menu Principal =======================\n");
+        printf("\n========================= Menu Principal =======================\n");
         do
         {
             printf("A - Inserir\nB - Excluir\nC - Relatorio\nD - Sair\nOpcao : ");
@@ -64,7 +64,6 @@ cliente *subMenuA(cliente *listaCliente)
     {
     case 1:;
         listaCliente = cadastrarCliente(listaCliente);
-        imprimirLista(listaCliente);
         break;
     case 2:;
         int codigo = 0;
@@ -119,7 +118,7 @@ void subMenuC(cliente *listaCliente)
     do
     {
         printf("1 - Listar todos os dados de clientes cadastrados e exibir media dos limites\n");
-        printf("2 - Listar todos os dados de um cliente por código\n");
+        printf("2 - Listar todos os dados de um cliente por codigo\n");
         printf("3 - Listar clientes por tipo de cartao\nOpcao : ");
         scanf(" %i", &opcaoNum);
         if (opcaoNum < 1 || opcaoNum > 3)
@@ -131,9 +130,14 @@ void subMenuC(cliente *listaCliente)
     switch (opcaoNum)
     {
     case 1:;
-        exibirTodosClientes(listaCliente, 0);
+        exibirTodosClientes(listaCliente, 0, 0);
         break;
-
+    case 2:;
+        exibirClienteEspecifico(listaCliente, procurarCodigo());
+        break;
+    case 3:;
+    	printarClientePorCartao(listaCliente, recebeTipoCartao());
+    	break;
     default:
         break;
     }
@@ -172,18 +176,7 @@ void cadastrarLimite(float *limite, int idade)
 
 void cadastrarTipoCartao(cliente *cliente)
 {
-    char tipo = NULL;
-    do
-    {
-        fflush(stdin);
-        printf("\nInsira o tipo de cartao: ");
-        scanf("%c", &tipo);
-        tipo = toupper(tipo);
-        if (tipo != 'U' && tipo != 'N' && tipo != 'I')
-        {
-            printf("\nInsira um valor dentre os possiveis: U, N ou I");
-        }
-    } while (tipo != 'U' && tipo != 'N' && tipo != 'I');
+   char tipo =  recebeTipoCartao();
 
     if (tipo == 'N')
     {
@@ -428,28 +421,27 @@ int procurarCodigo()
     int valor;
     do
     {
-        printf("\nDigite o código a ser procurado: ");
+        printf("\nDigite o codigo a ser procurado: ");
         scanf("%i", &valor);
         if (valor < 0)
         {
-            printf("\nInválido.");
+            printf("\nInvalido.");
         }
     } while (valor < 0);
     return valor;
 }
 
-void exibirTodosClientes(cliente *listaCliente, int count)
+void exibirTodosClientes(cliente *listaCliente, int count, float limiteTotal)
 {
     if (listaCliente != NULL)
     {
         printarValoresCliente(listaCliente);
-        exibirTodosClientes(listaCliente->proximo, ++count);
-    }
-    else
-    {
-        printf("\nLista vazia, não há nada para exibir!\n");
-    }
-
+        exibirTodosClientes(listaCliente->proximo, ++count, limiteTotal += listaCliente->limiteEmprestimo);
+    }else{
+    	float mediaLimite = limiteTotal/count;
+    	printf("\n-------------------------MEDIA--------------------------------------");
+    	printf("\nMedia dos limites: %.2f \n", mediaLimite);
+	}
 }
 
 void exibirClienteEspecifico(cliente *listaCliente, int codigo)
@@ -485,10 +477,40 @@ void printarValoresCliente(cliente *cliente)
     printf("\nCodigo: %i", cliente->codigo);
     printf("\nData de Nascimento: %s", cliente->dataDeNascimento);
     printf("\nTipo de Cartao: %c", cliente->tipoDeCartao);
-    printf("\nLimite de Emprestimo: %f", cliente->limiteEmprestimo);
+    printf("\nLimite de Emprestimo: %.2f", cliente->limiteEmprestimo);
     printf("\nQuantidade de Dependentes: %i", cliente->quantidadeDeDependentes);
     if (cliente->quantidadeDeDependentes > 0)
     {
         exibirDependentes(cliente->listaDependentes);
     }
 }
+
+char recebeTipoCartao()
+{
+	 char tipo;
+     do
+    {
+        fflush(stdin);
+        printf("\nInsira o tipo de cartao: ");
+        scanf("%c", &tipo);
+        tipo = toupper(tipo);
+        if (tipo != 'U' && tipo != 'N' && tipo != 'I')
+        {
+            printf("\nInsira um valor dentre os possiveis: U, N ou I");
+        }
+    } while (tipo != 'U' && tipo != 'N' && tipo != 'I');
+     return tipo;
+}
+
+void printarClientePorCartao(cliente *listaCliente, char tipo)
+{
+     if(listaCliente != NULL){
+     	if(listaCliente->tipoDeCartao == tipo){
+     		printarValoresCliente(listaCliente);
+		 }
+		 printarClientePorCartao(listaCliente->proximo,tipo);
+	 }
+	 
+}
+
+
