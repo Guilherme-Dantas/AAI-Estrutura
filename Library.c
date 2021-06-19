@@ -434,12 +434,10 @@ cliente *cadastrarCliente(cliente *inicioLista, char *dtAtual)
 
 cliente *buscarCliente(cliente *atual, int codigoProcurar, cliente **anterior)
 {
-    //cliente *clienteAnterior = NULL;
     while (atual != NULL)
     {
         if (atual->codigo == codigoProcurar)
         {
-            //(*anterior) = clienteAnterior;
             return atual;
         }
         else
@@ -620,17 +618,17 @@ void removerDependente(cliente *clienteReferencia)
 
 void removerDependentePorCliente(dependente *excluir, dependente **inicioLista, dependente **ultimoRegistro)
 {
-    //Se for o primeiro da lista.
+
     if (excluir->anterior == NULL)
-    {                                             //if (!excluir->anterior) {
-        (*inicioLista) = (*inicioLista)->proximo; //Altero o primeiro para o segundo.
+    {                                             
+        (*inicioLista) = (*inicioLista)->proximo; 
         if ((*inicioLista) != NULL)
-        {                                    //Existe registro válido.
-            (*inicioLista)->anterior = NULL; //Coloca null no anterior, pois antes não vem ninguém.
+        {                                    
+            (*inicioLista)->anterior = NULL; 
         }
     }
     else
-    { //Não é o primeiro.
+    { 
         excluir->anterior->proximo = excluir->proximo;
         if (excluir->proximo != NULL)
         {
@@ -638,14 +636,13 @@ void removerDependentePorCliente(dependente *excluir, dependente **inicioLista, 
         }
     }
 
-    //Verifica se o registro a ser excluído é o último.
+    
     if ((*ultimoRegistro)->codigo == excluir->codigo)
     {
-        (*ultimoRegistro) = excluir->anterior; //O último registro passará a ser o anterior a ele.
+        (*ultimoRegistro) = excluir->anterior; 
     }
 
-    //Retirar o registro da memória.
-    free(excluir); //Exclui efetivamente o registro solicitado.
+    free(excluir); 
 }
 
 dependente *procurarUltimo(dependente *listaDependente)

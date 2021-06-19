@@ -31,7 +31,7 @@ void cadastrarTipoCartao(cliente *cliente);
 void cadastrarTipoDependente(dependente *dependente);
 cliente *subMenuA(cliente *listaCliente, char *dataAtual);
 cliente *subMenuB(cliente *listaCliente);
-void subMenuC();
+void subMenuC(cliente *listaCliente);
 void cadastrarLimite(float *limite, int idade);
 void cadastrarQtdDependente(cliente *cliente);
 int calcularIdade();
