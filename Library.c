@@ -53,7 +53,7 @@ cliente *subMenuA(cliente *listaCliente, char *dataAtual)
     int opcaoNum = 0;
     do
     {
-        //fflush(stdin);
+        
         printf("1 - Efetuar inclusao de cliente\n2 - Efetuar inclusao de dependente\nOpcao : ");
         scanf(" %i", &opcaoNum);
         if (opcaoNum != 1 && opcaoNum != 2)
@@ -406,7 +406,7 @@ dependente *cadastrarDependentes(dependente *fimLista, cliente *cliente, char *d
     {
         fimLista->proximo = novoDependente;
     }
-
+	printf("\nCodigo do dependente criado: %i",novoDependente->codigo);
     return novoDependente;
 }
 
@@ -428,7 +428,9 @@ cliente *cadastrarCliente(cliente *inicioLista, char *dtAtual)
     clienteNovo->codigo = RAND;
     clienteNovo->proximo = inicioLista;
     clienteNovo->quantidadeDeDependentes = 0;
-
+	
+	printf("\nCodigo do cliente inserido: %i",clienteNovo->codigo);
+	
     return clienteNovo;
 }
 
@@ -497,7 +499,7 @@ void exibirTodosClientes(cliente *listaCliente, int count, float limiteTotal)
     else
     {
         float mediaLimite = limiteTotal / count;
-        printf("\n-------------------------MEDIA--------------------------------------");
+        printf("\n\n-------------------------MEDIA--------------------------------------");
         printf("\nMedia dos limites: %.2f \n", mediaLimite);
     }
 }
@@ -519,6 +521,7 @@ void exibirDependentes(dependente *listaDependente)
 {
     if (listaDependente != NULL)
     {
+    	printf("\n");
         printf("\nDados do Dependente: %s", listaDependente->nome);
         printf("\nCodigo: %i", listaDependente->codigo);
         printf("\nData de Nascimento: %s", listaDependente->dataDeNascimento);
@@ -534,7 +537,7 @@ void printarValoresCliente(cliente *cliente)
 
     if (cliente != NULL)
     {
-        printf("\n================================================================");
+        printf("\n\n================================================================");
         printf("\nDados do cliente %s", cliente->nome);
         printf("\nCodigo: %i", cliente->codigo);
         printf("\nData de Nascimento: %s", cliente->dataDeNascimento);
@@ -602,8 +605,9 @@ void removerCliente(cliente *excluir, cliente *anterior, cliente **inicioLista)
             dependente *ultimoDependente = procurarUltimo(excluir->listaDependentes);
             removerDependentePorCliente(dependenteEncontrado, &excluir->listaDependentes, &ultimoDependente);
         }
+        
     }
-
+	printf("\nCliente excluido com sucesso");
     free(excluir);
 }
 
@@ -614,6 +618,7 @@ void removerDependente(cliente *clienteReferencia)
     dependente *ultimoDependente = procurarUltimo(clienteReferencia->listaDependentes);
     removerDependentePorCliente(dependenteEncontrado, &clienteReferencia->listaDependentes, &ultimoDependente);
     clienteReferencia->quantidadeDeDependentes--;
+    printf("\nDependente excluido com sucesso");
 }
 
 void removerDependentePorCliente(dependente *excluir, dependente **inicioLista, dependente **ultimoRegistro)
