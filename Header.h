@@ -4,6 +4,7 @@ struct Dependente
     char nome[50];
     int codigo;
     char dataDeNascimento[11];
+    int idade;
     char tipo;
     dependente *anterior;
     dependente *proximo;
@@ -15,6 +16,7 @@ struct Cliente
     char nome[50];
     int codigo;
     char dataDeNascimento[11];
+    int idade;
     char tipoDeCartao;
     float limiteEmprestimo;
     int quantidadeDeDependentes;
@@ -24,20 +26,20 @@ struct Cliente
 } Cliente;
 
 void cadastrarNome(char *nome);
-char *cadastrarNascimento(char *dataNascStruct, int minIdade);
+char *cadastrarNascimento(char *dataNascStruct, char *dataAtual);
 void cadastrarTipoCartao(cliente *cliente);
 void cadastrarTipoDependente(dependente *dependente);
-cliente *subMenuA(cliente *listacliente);
-void subMenuB();
+cliente *subMenuA(cliente *listaCliente, char *dataAtual);
+cliente *subMenuB(cliente *listaCliente);
 void subMenuC();
 void cadastrarLimite(float *limite, int idade);
 void cadastrarQtdDependente(cliente *cliente);
 int calcularIdade();
 int verificaData(char *data);
-cliente *cadastrarCliente(cliente *listaCliente);
-dependente *cadastrarDependentes(dependente *fimLista, cliente *cliente);
-cliente *buscarRegistro(cliente *atual, int cod, cliente **anterior);
-int procurarCodigo();
+cliente *cadastrarCliente(cliente *inicioLista, char *dtAtual);
+dependente *cadastrarDependentes(dependente *fimLista, cliente *cliente, char *dtAtual);
+cliente *buscarCliente(cliente *atual, int codigoProcurar, cliente **anterior);
+int buscarCodigo();
 void exibirTodosClientes(cliente *listaCliente, int count, float limiteTotal);
 void exibirClienteEspecifico(cliente *listaCliente, int codigo);
 void exibirDependentes(dependente *listaDependente);
