@@ -36,14 +36,18 @@ int calcularIdade();
 int verificaData(char *data);
 cliente *cadastrarCliente(cliente *listaCliente);
 dependente *cadastrarDependentes(dependente *fimLista, cliente *cliente);
-cliente *buscarRegistro(cliente *atual, int cod);
+cliente *buscarRegistro(cliente *atual, int cod, cliente **anterior);
 int procurarCodigo();
 void exibirTodosClientes(cliente *listaCliente, int count, float limiteTotal);
 void exibirClienteEspecifico(cliente *listaCliente, int codigo);
 void exibirDependentes(dependente *listaDependente);
 void printarValoresCliente(cliente *cliente);
 void printarClientePorCartao(cliente *listaCliente, char tipo);
+void removerCliente(cliente *excluir, cliente *anterior, cliente **inicioLista);
 char recebeTipoCartao();
+void removerDependentePorCliente(dependente *excluir, dependente **inicioLista, dependente **ultimoRegistro);
+dependente *procurarUltimo(dependente *listaDependente);
+void removerDependente(cliente *clienteReferencia);
 
 #define RAND rand() % 1000
 #define RAND_INCREMENTAL(a) (a + 1)
