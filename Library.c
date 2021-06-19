@@ -72,6 +72,7 @@ cliente *subMenuA(cliente *listaCliente, char *dataAtual)
         int codigo = 0;
 
         cliente *clienteEncontrado;
+        cliente *clienteAnterior;
         dependente *inicioListaDependentes = NULL;
         dependente *ultimoListaDependentes = NULL;
         
@@ -80,7 +81,7 @@ cliente *subMenuA(cliente *listaCliente, char *dataAtual)
         {
             
             codigo = buscarCodigo("cliente");
-            clienteEncontrado = buscarCliente(listaCliente, codigo, NULL);
+            clienteEncontrado = buscarCliente(listaCliente, codigo, &clienteAnterior);
 
             if (clienteEncontrado == NULL)
             {
@@ -154,6 +155,7 @@ cliente *subMenuB(cliente *listaCliente)
 void subMenuC(cliente *listaCliente)
 {
     int opcaoNum = 0;
+    cliente *clienteAnterior = NULL;
     do
     {
         fflush(stdin);
@@ -178,7 +180,7 @@ void subMenuC(cliente *listaCliente)
         exibirTodosClientes(listaCliente, 0, 0);
         break;
     case 2:;
-        exibirClienteEspecifico(listaCliente, buscarCodigo("cliente"));
+        exibirClienteEspecifico(listaCliente, buscarCodigo("cliente"), clienteAnterior);
         break;
     case 3:;
         printarClientePorCartao(listaCliente, recebeTipoCartao());
@@ -504,9 +506,9 @@ void exibirTodosClientes(cliente *listaCliente, int count, float limiteTotal)
     }
 }
 
-void exibirClienteEspecifico(cliente *listaCliente, int codigo)
+void exibirClienteEspecifico(cliente *listaCliente, int codigo, cliente *clienteAnterior)
 {
-    cliente *clienteEncontrado = buscarCliente(listaCliente, codigo, NULL);
+    cliente *clienteEncontrado = buscarCliente(listaCliente, codigo, &clienteAnterior);
     if (clienteEncontrado != NULL)
     {
         printarValoresCliente(clienteEncontrado);
@@ -538,7 +540,7 @@ void printarValoresCliente(cliente *cliente)
     if (cliente != NULL)
     {
         printf("\n\n================================================================");
-        printf("\nDados do cliente %s", cliente->nome);
+        printf("\nDados do cliente: %s", cliente->nome);
         printf("\nCodigo: %i", cliente->codigo);
         printf("\nData de Nascimento: %s", cliente->dataDeNascimento);
         printf("\nIdade: %i", cliente->idade);

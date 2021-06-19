@@ -41,7 +41,7 @@ dependente *cadastrarDependentes(dependente *fimLista, cliente *cliente, char *d
 cliente *buscarCliente(cliente *atual, int codigoProcurar, cliente **anterior);
 int buscarCodigo();
 void exibirTodosClientes(cliente *listaCliente, int count, float limiteTotal);
-void exibirClienteEspecifico(cliente *listaCliente, int codigo);
+void exibirClienteEspecifico(cliente *listaCliente, int codigo, cliente *clienteAnterior);
 void exibirDependentes(dependente *listaDependente);
 void printarValoresCliente(cliente *cliente);
 void printarClientePorCartao(cliente *listaCliente, char tipo);
