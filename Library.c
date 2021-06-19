@@ -139,7 +139,7 @@ cliente *subMenuB(cliente *listaCliente)
         }
         break;
     case 2:;
-        codigo = buscarCodigo("dependente");
+        codigo = buscarCodigo("cliente");
         cliente *clienteEncontrado = buscarCliente(listaCliente, codigo, &clienteAnterior);
         removerDependente(clienteEncontrado);
         break;
