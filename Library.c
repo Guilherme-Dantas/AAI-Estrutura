@@ -580,6 +580,10 @@ void printarClientePorCartao(cliente *listaCliente, char tipo)
             printarValoresCliente(listaCliente);
         }
         printarClientePorCartao(listaCliente->proximo, tipo);
+    }else{
+        printf("\n\n-----------------------------------------------Aviso------------------------------------------------------");
+        printf("\nNao ha mais nenhum cliente para exibir. Verifique se existem clientes cadastrados com esse tipo de cartao!");
+        printf("\n-----------------------------------------------Aviso------------------------------------------------------\n");
     }
 }
 
